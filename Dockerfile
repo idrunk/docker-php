@@ -1,9 +1,9 @@
 FROM php:7.2.9-cli-alpine3.8
-Maintainer Drunk (https://github.com/drunker, http://idrunk.net)
+MAINTAINER Drunk (https://github.com/drunker, http://idrunk.net)
 RUN cp /etc/apk/repositories /etc/apk/repositories.bak \
     && echo "http://mirrors.aliyun.com/alpine/v3.8/main" > /etc/apk/repositories \
 	&& echo "http://mirrors.aliyun.com/alpine/v3.8/community" >> /etc/apk/repositories \
-	&& docker-php-ext-install sockets \
+	&& docker-php-ext-install sockets pcntl\
 	&& apk add tzdata \
 	    autoconf \
 	    build-base \
@@ -13,9 +13,17 @@ RUN cp /etc/apk/repositories /etc/apk/repositories.bak \
         libressl-dev \
 	    nghttp2-dev \
 	    hiredis-dev \
+	    pcre-dev \
 	&& cp /usr/share/zoneinfo/PRC /etc/localtime \
 	&& echo "PRC" >  /etc/timezone \
 	&& cd / && mkdir download && cd download \
+	&& wget http://pecl.php.net/get/redis-4.1.1.tgz \
+	&& tar -xzvf redis-4.1.1.tgz \
+	&& cd redis-4.1.1 \
+	&& phpize \
+	&& ./configure \
+	&& make && make install \
+	&& cd .. \
 	&& wget https://github.com/swoole/swoole-src/archive/v4.1.0.tar.gz -O swoole-src-4.1.0.tar.gz \
 	&& tar -xzvf swoole-src-4.1.0.tar.gz \
 	&& cd swoole-src-4.1.0 \
@@ -27,7 +35,7 @@ RUN cp /etc/apk/repositories /etc/apk/repositories.bak \
         --enable-sockets \
         --enable-mysqlnd \
 	&& make && make install \
-	&& docker-php-ext-enable swoole \
+	&& docker-php-ext-enable redis swoole \
 	&& apk del tzdata \
 	    autoconf \
 	    build-base \
