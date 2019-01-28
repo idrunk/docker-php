@@ -1,9 +1,9 @@
-FROM php:7.2.9-cli-alpine3.8
+FROM php:7.3.1-cli-alpine3.8
 MAINTAINER Drunk (https://github.com/drunker, http://idrunk.net)
 RUN cp /etc/apk/repositories /etc/apk/repositories.bak \
-    && echo "http://mirrors.aliyun.com/alpine/v3.8/main" > /etc/apk/repositories \
-	&& echo "http://mirrors.aliyun.com/alpine/v3.8/community" >> /etc/apk/repositories \
-	&& docker-php-ext-install sockets pcntl\
+    && echo "http://mirrors.aliyun.com/alpine/v3.8/main/" > /etc/apk/repositories \
+	&& echo "http://mirrors.aliyun.com/alpine/v3.8/community/" >> /etc/apk/repositories \
+	&& docker-php-ext-install sockets pcntl pdo_mysql \
 	&& apk add tzdata \
 	    autoconf \
 	    build-base \
@@ -12,26 +12,24 @@ RUN cp /etc/apk/repositories /etc/apk/repositories.bak \
         libxml2-dev \
         libressl-dev \
 	    nghttp2-dev \
-	    hiredis-dev \
 	    pcre-dev \
 	&& cp /usr/share/zoneinfo/PRC /etc/localtime \
 	&& echo "PRC" >  /etc/timezone \
 	&& cd / && mkdir download && cd download \
-	&& wget http://pecl.php.net/get/redis-4.1.1.tgz \
-	&& tar -xzvf redis-4.1.1.tgz \
-	&& cd redis-4.1.1 \
+	&& wget http://pecl.php.net/get/redis-4.2.0.tgz \
+	&& tar -xzvf redis-4.2.0.tgz \
+	&& cd redis-4.2.0 \
 	&& phpize \
 	&& ./configure \
 	&& make && make install \
 	&& cd .. \
-	&& wget https://github.com/swoole/swoole-src/archive/v4.1.0.tar.gz -O swoole-src-4.1.0.tar.gz \
-	&& tar -xzvf swoole-src-4.1.0.tar.gz \
-	&& cd swoole-src-4.1.0 \
+	&& wget https://github.com/swoole/swoole-src/archive/v4.2.12.tar.gz -O swoole-src-4.2.12.tar.gz \
+	&& tar -xzvf swoole-src-4.2.12.tar.gz \
+	&& cd swoole-src-4.2.12 \
 	&& phpize \
 	&& ./configure \
         --enable-openssl  \
         --enable-http2  \
-        --enable-async-redis \
         --enable-sockets \
         --enable-mysqlnd \
 	&& make && make install \

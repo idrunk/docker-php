@@ -1,11 +1,11 @@
 # Swoole PHP
 
-SwoolePHP是一个打包了最新稳定版的Swoole和PHP的镜像, 体积小/功能全, 镜像包仅100M, 支持wiki.swoole.com上所有示例脚本. 欢迎大家拉取体验.
+SwoolePHP是一个打包了最新稳定版的Swoole和PHP的镜像, 体积小/功能全, 镜像包仅96M, 支持wiki.swoole.com上所有示例脚本. 欢迎大家拉取体验.
 
 #### 构成
 ```
-Swoole v4.1.0
-PHP v7.2.9
+Swoole v4.2.12
+PHP v7.3.1
 Alpine v3.8
 ```
 
