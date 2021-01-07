@@ -1,55 +1,9 @@
-FROM php:7.3.1-cli-alpine3.8
-MAINTAINER Drunk (https://github.com/drunker, http://idrunk.net)
-RUN cp /etc/apk/repositories /etc/apk/repositories.bak \
-    && echo "http://mirrors.aliyun.com/alpine/v3.8/main/" > /etc/apk/repositories \
-	&& echo "http://mirrors.aliyun.com/alpine/v3.8/community/" >> /etc/apk/repositories \
-	&& docker-php-ext-install sockets pcntl pdo_mysql \
-	&& apk add tzdata \
-	    autoconf \
-	    build-base \
-	    linux-headers \
-        libaio-dev \
-        libxml2-dev \
-        libressl-dev \
-	    nghttp2-dev \
-	    pcre-dev \
-	&& cp /usr/share/zoneinfo/PRC /etc/localtime \
-	&& echo "PRC" >  /etc/timezone \
-	&& cd / && mkdir download && cd download \
-	&& wget http://pecl.php.net/get/redis-4.2.0.tgz \
-	&& tar -xzvf redis-4.2.0.tgz \
-	&& cd redis-4.2.0 \
-	&& phpize \
-	&& ./configure \
-	&& make && make install \
-	&& cd .. \
-	&& wget https://github.com/swoole/swoole-src/archive/v4.2.12.tar.gz -O swoole-src-4.2.12.tar.gz \
-	&& tar -xzvf swoole-src-4.2.12.tar.gz \
-	&& cd swoole-src-4.2.12 \
-	&& phpize \
-	&& ./configure \
-        --enable-openssl  \
-        --enable-http2  \
-        --enable-sockets \
-        --enable-mysqlnd \
-	&& make && make install \
-	&& docker-php-ext-enable redis swoole \
-	&& apk del tzdata \
-	    autoconf \
-	    build-base \
-	    linux-headers \
-        libaio-dev \
-        libxml2-dev \
-        libressl-dev \
-	    nghttp2-dev \
-	&& apk add libstdc++ \
-	&& cd / \
-	&& rm -rf /download/ \
-	&& rm -rf /var/cache/apk/ \
-    && rm -rf /tmp/ \
-    && rm -rf /usr/include/ \
-    && rm -rf /usr/local/include/ \
-    && rm -rf /usr/src/
-VOLUME /app
-WORKDIR /app
-EXPOSE 9501
+FROM phpswoole/swoole:latest-alpine
+
+RUN \
+    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS        && \
+    pecl update-channels        && \
+    pecl install redis          && \
+    docker-php-ext-enable redis && \
+    docker-php-ext-install pcntl pdo_mysql && \
+    apk del .build-deps
