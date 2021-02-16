@@ -1,7 +1,8 @@
 FROM phpswoole/swoole:latest-alpine
 
 RUN \
-    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS        && \
+    apk add --no-cache git && \
+    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS    && \
     pecl update-channels        && \
     pecl install redis          && \
     docker-php-ext-enable redis && \
