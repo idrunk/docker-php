@@ -1,10 +1,10 @@
-本镜像为Dce作者封装的用于[Dce框架](https://drunkce.com/)的Swoole镜像，但也兼容普通Swoole或PHP cli程序，欢迎体验。本镜像继承自[Swoole官方alpine镜像](https://github.com/swoole/docker-swoole/tree/master/dockerfiles/latest/php8.0/alpine), 在该镜像基础上增装了pdo_mysql, redis等PHP扩展。
+本镜像为Dce作者封装的用于[Dce框架](https://drunkce.com/)的Swoole镜像，但也兼容普通Swoole或PHP cli程序，欢迎体验。本镜像继承自[Swoole官方PHP8.1的alpine镜像](https://github.com/swoole/docker-swoole/tree/master/dockerfiles/latest/php8.1/alpine), 在该镜像基础上增装了pdo_mysql, redis等PHP扩展。
 
-## [normal]()
+## [normal](./normal/)
 
 常规镜像，普通swoole镜像，未集成debug工具，用于生产环境
 
-## [debug]()
+## [debug](./debug/)
 
 带有[Swoole官方推荐的调试工具包](https://wiki.swoole.com/#/other/tools)的swoole镜像，方便开发调试
 
@@ -26,11 +26,11 @@ max_executed_opline_num | DEBUG_OPLINE | 10000
 
 1. 在Phpstorm中设置xdebug监听端口为44444，并启动监听
 
-2. 在设置“PHP->servers”下添加名为dce的服务器路径映射
+2. 在设置“PHP->servers”下添加名为dce的服务器并映射开发与调试脚本路径
 
 3. 指定监听端口到环境变量，启动容器
 ```
-podman run --rm --privileged --name dce -it -e "DEBUG_HOST=${你的宿主机IP}" -v ${项目目录}:/app -p ${服务端口}:20461 idrunk/swoole:yasd -e /app/dce websocket start
+podman run --rm --privileged --name dce -it -e "DEBUG_HOST=${你的宿主机IP}" -v ${项目目录}:/app -p ${服务端口}:20461 idrunk/swoole:debug -e /app/dce websocket start
 ```
 
 #### remote问题
