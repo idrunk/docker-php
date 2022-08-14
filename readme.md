@@ -1,12 +1,16 @@
 本镜像为Dce作者封装的用于[Dce框架](https://drunkce.com/)的Swoole镜像，但也兼容普通Swoole或PHP cli程序，欢迎体验。本镜像继承自[Swoole官方PHP8.1的alpine镜像](https://github.com/swoole/docker-swoole/tree/master/dockerfiles/latest/php8.1/alpine), 在该镜像基础上增装了pdo_mysql, redis等PHP扩展。
 
+## [thin](./thin/)
+
+瘦镜像，普通swoole镜像，仅增装了pdo_mysql, redis扩展
+
 ## [normal](./normal/)
 
-常规镜像，普通swoole镜像，未集成debug工具，用于生产环境
+普通镜像，比瘦镜像增装了gmp, gd, imagick扩展
 
 ## [debug](./debug/)
 
-带有[Swoole官方推荐的调试工具包](https://wiki.swoole.com/#/other/tools)的swoole镜像，方便开发调试
+开发环境镜像，比普通镜像增装了[Swoole官方推荐的调试工具包](https://wiki.swoole.com/#/other/tools)，方便开发调试
 
 ### yasd
 
@@ -30,7 +34,7 @@ max_executed_opline_num | DEBUG_OPLINE | 10000
 
 3. 指定监听端口到环境变量，启动容器
 ```
-podman run --rm --privileged --name dce -it -e "DEBUG_HOST=${你的宿主机IP}" -v ${项目目录}:/app -p ${服务端口}:20461 idrunk/swoole:debug -e /app/dce websocket start
+docker run --rm --privileged --name dce -it -e "DEBUG_HOST=${你的宿主机IP}" -v ${项目目录}:/app -p ${服务端口}:20461 idrunk/swoole:debug -e /app/dce websocket start
 ```
 
 #### remote问题
@@ -45,28 +49,28 @@ podman run --rm --privileged --name dce -it -e "DEBUG_HOST=${你的宿主机IP}"
 ### tcpdump
 
 ```
-podman exec -it dce tcpdump -i any tcp port 20461
+docker exec -it dce tcpdump -i any tcp port 20461
 ```
 
 
 ### strace
 
 ```
-podman exec -it dce strace -f -p ${PID}
+docker exec -it dce strace -f -p ${PID}
 ```
 
 
 ### gdb
 
 ```
-podman exec -it dce gdb -p ${PID}
+docker exec -it dce gdb -p ${PID}
 ```
 
 
 ### zbacktrace
 
 ```
-podman exec -it dce gdb -p ${PID}
+docker exec -it dce gdb -p ${PID}
 
 source /usr/src/php/.gdbinit
 zbacktrace
@@ -76,12 +80,12 @@ zbacktrace
 ### lsof
 
 ```
-podman exec -it dce lsof -p ${PID}
+docker exec -it dce lsof -p ${PID}
 ```
 
 
 ### perf
 
 ```
-podman exec -it dce perf top -p ${PID}
+docker exec -it dce perf top -p ${PID}
 ```
